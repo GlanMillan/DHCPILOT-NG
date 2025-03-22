@@ -1,0 +1,10 @@
+zone "example.com" {
+    type master;
+    file "/var/cache/bind/db.example.com";
+    allow-update { key "rndc-key"; };
+};
+
+key "rndc-key" {
+    algorithm hmac-sha256;
+    secret "${BIND9_RNDC_KEY}";
+}; 
