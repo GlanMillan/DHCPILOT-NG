@@ -1,13 +1,18 @@
-dependency failed to start: container dhcpliot-ng-db-1 exited (3)
-[ERROR] 服务启动失败
-root@debianDocker:/DHCPLIOT-NG# docker compose ls
-NAME                STATUS              CONFIG FILES
-dhcpliot-ng         running(2)          /DHCPLIOT-NG/docker-compose.yml
-root@debianDocker:/DHCPLIOT-NG# docker compose logs ls
-WARN[0000] /DHCPLIOT-NG/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion
-no such service: ls
 root@debianDocker:/DHCPLIOT-NG# docker compose logs -f
 WARN[0000] /DHCPLIOT-NG/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion
+kea-1    | 2025-03-22 03:05:26,827 INFO Set uid to user 0 succeeded
+kea-1    | 2025-03-22 03:05:26,829 INFO supervisord started with pid 1
+kea-1    | 2025-03-22 03:05:27,834 INFO spawned: 'kea-ctrl-agent' with pid 7
+kea-1    | 2025-03-22 03:05:27,837 INFO spawned: 'kea-dhcp4' with pid 8
+kea-1    | 2025-03-22 03:05:27,900 INFO exited: kea-dhcp4 (exit status 1; not expected)
+kea-1    | 2025-03-22 03:05:28,905 INFO success: kea-ctrl-agent entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+kea-1    | 2025-03-22 03:05:28,907 INFO spawned: 'kea-dhcp4' with pid 17
+kea-1    | 2025-03-22 03:05:28,961 INFO exited: kea-dhcp4 (exit status 1; not expected)
+kea-1    | 2025-03-22 03:05:30,965 INFO spawned: 'kea-dhcp4' with pid 22
+kea-1    | 2025-03-22 03:05:31,024 INFO exited: kea-dhcp4 (exit status 1; not expected)
+kea-1    | 2025-03-22 03:05:34,034 INFO spawned: 'kea-dhcp4' with pid 27
+kea-1    | 2025-03-22 03:05:34,091 INFO exited: kea-dhcp4 (exit status 1; not expected)
+kea-1    | 2025-03-22 03:05:35,093 INFO gave up: kea-dhcp4 entered FATAL state, too many start retries too quickly
 db-1     | The files belonging to this database system will be owned by user "postgres".
 db-1     | This user must also own the server process.
 db-1     |
@@ -26,211 +31,87 @@ db-1     | selecting default time zone ... UTC
 db-1     | creating configuration files ... ok
 db-1     | running bootstrap script ... ok
 db-1     | sh: locale: not found
-db-1     | 2025-03-22 02:29:46.768 UTC [35] WARNING:  no usable system locales were found
+db-1     | 2025-03-22 03:05:16.682 UTC [35] WARNING:  no usable system locales were found
 db-1     | performing post-bootstrap initialization ... ok
-db-1     | initdb: warning: enabling "trust" authentication for local connections
 db-1     | syncing data to disk ... ok
 db-1     |
 db-1     |
-db-1     | Success. You can now start the database server using:
+db-1     | initdb: warning: enabling "trust" authentication for local connections
 db-1     | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+db-1     | Success. You can now start the database server using:
 db-1     |
 db-1     |     pg_ctl -D /var/lib/postgresql/data -l logfile start
 db-1     |
-db-1     | waiting for server to start....2025-03-22 02:29:47.846 UTC [41] LOG:  starting PostgreSQL 16.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
-db-1     | 2025-03-22 02:29:47.848 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
-db-1     | 2025-03-22 02:29:47.856 UTC [44] LOG:  database system was shut down at 2025-03-22 02:29:47 UTC
-db-1     | 2025-03-22 02:29:47.865 UTC [41] LOG:  database system is ready to accept connections
+db-1     | waiting for server to start....2025-03-22 03:05:17.715 UTC [41] LOG:  starting PostgreSQL 16.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+db-1     | 2025-03-22 03:05:17.719 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1     | 2025-03-22 03:05:17.727 UTC [44] LOG:  database system was shut down at 2025-03-22 03:05:17 UTC
+db-1     | 2025-03-22 03:05:17.737 UTC [41] LOG:  database system is ready to accept connections
 db-1     |  done
 db-1     | server started
 db-1     | CREATE DATABASE
 db-1     |
 db-1     |
 db-1     | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init.sql
-db-1     | psql:/docker-entrypoint-initdb.d/init.sql:2: ERROR:  database "dhcp_admin" already exists
-db-1     | 2025-03-22 02:29:48.069 UTC [54] ERROR:  database "dhcp_admin" already exists
-db-1     | 2025-03-22 02:29:48.069 UTC [54] STATEMENT:  CREATE DATABASE dhcp_admin;
-redis-1  | 1:C 22 Mar 2025 02:29:45.916 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
-redis-1  | 1:C 22 Mar 2025 02:29:45.916 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
-redis-1  | 1:C 22 Mar 2025 02:29:45.916 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
-redis-1  | 1:C 22 Mar 2025 02:29:45.916 * Configuration loaded
-redis-1  | 1:M 22 Mar 2025 02:29:45.916 * monotonic clock: POSIX clock_gettime
-redis-1  | 1:M 22 Mar 2025 02:29:45.917 * Running mode=standalone, port=6379.
-redis-1  | 1:M 22 Mar 2025 02:29:45.918 * Server initialized
-redis-1  | 1:M 22 Mar 2025 02:29:45.918 * Ready to accept connections tcp
-bind9-1  | wrote key file "/etc/bind/rndc.key"
-bind9-1  | 22-Mar-2025 02:29:46.091 starting BIND 9.18.30-0ubuntu0.22.04.2-Ubuntu (Extended Support Version) <id:>
-bind9-1  | 22-Mar-2025 02:29:46.091 running on Linux x86_64 6.1.0-32-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.129-1 (2025-03-06)
-bind9-1  | 22-Mar-2025 02:29:46.091 built with  '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--disable-option-checking' '--disable-silent-rules' '--libdir=${prefix}/lib/x86_64-linux-gnu' '--runstatedir=/run' '--disable-maintainer-mode' '--disable-dependency-tracking' '--libdir=/usr/lib/x86_64-linux-gnu' '--sysconfdir=/etc/bind' '--with-python=python3' '--localstatedir=/' '--enable-threads' '--enable-largefile' '--with-libtool' '--enable-shared' '--disable-static' '--with-gost=no' '--with-openssl=/usr' '--with-gssapi=yes' '--with-libidn2' '--with-json-c' '--with-lmdb=/usr' '--with-gnu-ld' '--with-maxminddb' '--with-atf=no' '--enable-ipv6' '--enable-rrl' '--enable-filter-aaaa' '--disable-native-pkcs11' 'build_alias=x86_64-linux-gnu' 'CFLAGS=-g -O2 -ffile-prefix-map=/build/bind9-AB1uwX/bind9-9.18.30=. -flto=auto -ffat-lto-objects -flto=auto -ffat-lto-objects -fstack-protector-strong -Wformat -Werror=format-security -fno-strict-aliasing -fno-delete-null-pointer-checks -DNO_VERSION_DATE -DDIG_SIGCHASE' 'LDFLAGS=-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -flto=auto -Wl,-z,relro -Wl,-z,now' 'CPPFLAGS=-Wdate-time -D_FORTIFY_SOURCE=2'
-bind9-1  | 22-Mar-2025 02:29:46.091 running as: named -g -c /etc/bind/named.conf
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled by GCC 11.4.0
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled with OpenSSL version: OpenSSL 3.0.2 15 Mar 2022
-bind9-1  | 22-Mar-2025 02:29:46.091 linked to OpenSSL version: OpenSSL 3.0.2 15 Mar 2022
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled with libuv version: 1.43.0
-bind9-1  | 22-Mar-2025 02:29:46.091 linked to libuv version: 1.43.0
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled with libxml2 version: 2.9.13
-bind9-1  | 22-Mar-2025 02:29:46.091 linked to libxml2 version: 20913
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled with json-c version: 0.15
-bind9-1  | 22-Mar-2025 02:29:46.091 linked to json-c version: 0.15
-bind9-1  | 22-Mar-2025 02:29:46.091 compiled with zlib version: 1.2.11
-bind9-1  | 22-Mar-2025 02:29:46.091 linked to zlib version: 1.2.11
-bind9-1  | 22-Mar-2025 02:29:46.091 ----------------------------------------------------
-bind9-1  | 22-Mar-2025 02:29:46.091 BIND 9 is maintained by Internet Systems Consortium,
-bind9-1  | 22-Mar-2025 02:29:46.091 Inc. (ISC), a non-profit 501(c)(3) public-benefit
-bind9-1  | 22-Mar-2025 02:29:46.091 corporation.  Support and training for BIND 9 are
-bind9-1  | 22-Mar-2025 02:29:46.091 available at https://www.isc.org/support
-bind9-1  | 22-Mar-2025 02:29:46.091 ----------------------------------------------------
-bind9-1  | 22-Mar-2025 02:29:46.091 found 4 CPUs, using 4 worker threads
-bind9-1  | 22-Mar-2025 02:29:46.091 using 4 UDP listeners per interface
-bind9-1  | 22-Mar-2025 02:29:46.095 DNSSEC algorithms: RSASHA1 NSEC3RSASHA1 RSASHA256 RSASHA512 ECDSAP256SHA256 ECDSAP384SHA384 ED25519 ED448
-bind9-1  | 22-Mar-2025 02:29:46.095 DS algorithms: SHA-1 SHA-256 SHA-384
-bind9-1  | 22-Mar-2025 02:29:46.095 HMAC algorithms: HMAC-MD5 HMAC-SHA1 HMAC-SHA224 HMAC-SHA256 HMAC-SHA384 HMAC-SHA512
-bind9-1  | 22-Mar-2025 02:29:46.095 TKEY mode 2 support (Diffie-Hellman): yes
-bind9-1  | 22-Mar-2025 02:29:46.095 TKEY mode 3 support (GSS-API): yes
-bind9-1  | 22-Mar-2025 02:29:46.099 the initial working directory is '/'
-bind9-1  | 22-Mar-2025 02:29:46.099 loading configuration from '/etc/bind/named.conf'
-bind9-1  | 22-Mar-2025 02:29:46.099 the working directory is now '/var/cache/bind'
-bind9-1  | 22-Mar-2025 02:29:46.099 unable to open '/etc/bind/bind.keys'; using built-in keys instead
-bind9-1  | 22-Mar-2025 02:29:46.099 looking for GeoIP2 databases in '/usr/share/GeoIP'
-bind9-1  | 22-Mar-2025 02:29:46.099 using default UDP/IPv4 port range: [32768, 60999]
-bind9-1  | 22-Mar-2025 02:29:46.099 using default UDP/IPv6 port range: [32768, 60999]
-bind9-1  | 22-Mar-2025 02:29:46.103 listening on IPv4 interface lo, 127.0.0.1#53
-bind9-1  | 22-Mar-2025 02:29:46.103 listening on IPv4 interface eth0, 172.19.0.2#53
-bind9-1  | 22-Mar-2025 02:29:46.103 IPv6 socket API is incomplete; explicitly binding to each IPv6 address separately
-bind9-1  | 22-Mar-2025 02:29:46.103 listening on IPv6 interface lo, ::1#53
-bind9-1  | 22-Mar-2025 02:29:46.123 could not open file '//run/named/named.pid': Permission denied
-bind9-1  | 22-Mar-2025 02:29:46.123 generating session key for dynamic DNS
-bind9-1  | 22-Mar-2025 02:29:46.123 could not open file '//run/named/session.key': Permission denied
-bind9-1  | 22-Mar-2025 02:29:46.123 could not create //run/named/session.key
-bind9-1  | 22-Mar-2025 02:29:46.123 failed to generate session key for dynamic DNS: permission denied
-bind9-1  | 22-Mar-2025 02:29:46.123 sizing zone task pool based on 1 zones
-bind9-1  | 22-Mar-2025 02:29:46.123 using built-in root key for view _default
-bind9-1  | 22-Mar-2025 02:29:46.123 set up managed keys zone for view _default, file 'managed-keys.bind'
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 10.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 16.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 17.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 18.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 19.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 20.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 21.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 22.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 23.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 24.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 25.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 26.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 27.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 28.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 29.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 30.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 31.172.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 168.192.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 64.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.123 automatic empty zone: 65.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 66.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 67.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 68.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 69.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 70.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 71.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 72.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 73.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 74.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 75.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 76.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 77.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 78.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 79.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 80.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 81.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 82.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 83.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 84.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 85.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 86.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 87.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 88.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 89.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 90.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 91.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 92.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 93.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 94.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 95.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 96.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 97.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 98.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 99.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 100.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 101.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 102.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 103.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 104.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 105.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 106.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 107.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 108.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 109.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 110.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 111.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 112.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 113.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.127 automatic empty zone: 114.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 115.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 116.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 117.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 118.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 119.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 120.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 121.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 122.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 123.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 124.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 125.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 126.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 127.100.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 0.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 127.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 254.169.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 2.0.192.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 100.51.198.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 113.0.203.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 255.255.255.255.IN-ADDR.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: D.F.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 8.E.F.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 9.E.F.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: A.E.F.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: B.E.F.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: 8.B.D.0.1.0.0.2.IP6.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: EMPTY.AS112.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: HOME.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.131 automatic empty zone: RESOLVER.ARPA
-bind9-1  | 22-Mar-2025 02:29:46.135 configuring command channel from '/etc/bind/rndc.key'
-bind9-1  | 22-Mar-2025 02:29:46.135 open: /etc/bind/rndc.key: permission denied
-bind9-1  | 22-Mar-2025 02:29:46.135 command channel listening on 127.0.0.1#953
-bind9-1  | 22-Mar-2025 02:29:46.135 configuring command channel from '/etc/bind/rndc.key'
-bind9-1  | 22-Mar-2025 02:29:46.135 open: /etc/bind/rndc.key: permission denied
-bind9-1  | 22-Mar-2025 02:29:46.135 command channel listening on ::1#953
-bind9-1  | 22-Mar-2025 02:29:46.135 not using config file logging statement for logging due to -g option
-bind9-1  | 22-Mar-2025 02:29:46.143 managed-keys-zone: loaded serial 0
-bind9-1  | 22-Mar-2025 02:29:46.155 /var/cache/bind/db.example.com:12: file does not end with newline
-bind9-1  | 22-Mar-2025 02:29:46.155 zone example.com/IN: loaded serial 2023032201
-bind9-1  | 22-Mar-2025 02:29:46.155 all zones loaded
-bind9-1  | 22-Mar-2025 02:29:46.155 zone example.com/IN: sending notifies (serial 2023032201)
-bind9-1  | 22-Mar-2025 02:29:46.167 running
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:2d::d#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:503:ba3e::2:30#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2801:1b8:10::b#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:dc3::35#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:1::53#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:7fe::53#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:2::c#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:2f::f#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:7fd::1#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:12::d0d#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:9f::42#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
-bind9-1  | 22-Mar-2025 02:29:46.167 network unreachable resolving './NS/IN': 2001:500:a8::e#53
-bind9-1  | 22-Mar-2025 02:29:46.219 managed-keys-zone: Initializing automatic trust anchor management for zone '.'; DNSKEY ID 20326 is now trusted, waiving the normal 30-day waiting period.
-bind9-1  | 22-Mar-2025 02:29:46.219 managed-keys-zone: Initializing automatic trust anchor management for zone '.'; DNSKEY ID 38696 is now trusted, waiving the normal 30-day waiting period.
+db-1     | CREATE EXTENSION
+db-1     | ALTER DEFAULT PRIVILEGES
+db-1     | ALTER DEFAULT PRIVILEGES
+db-1     | GRANT
+db-1     | CREATE TABLE
+db-1     | CREATE TABLE
+db-1     | CREATE TABLE
+db-1     | CREATE TABLE
+db-1     | CREATE TABLE
+db-1     |
+db-1     |
+db-1     | 2025-03-22 03:05:18.046 UTC [41] LOG:  received fast shutdown request
+db-1     | waiting for server to shut down....2025-03-22 03:05:18.047 UTC [41] LOG:  aborting any active transactions
+db-1     | 2025-03-22 03:05:18.050 UTC [41] LOG:  background worker "logical replication launcher" (PID 47) exited with exit code 1
+db-1     | 2025-03-22 03:05:18.054 UTC [42] LOG:  shutting down
+db-1     | 2025-03-22 03:05:18.056 UTC [42] LOG:  checkpoint starting: shutdown immediate
+db-1     | 2025-03-22 03:05:18.159 UTC [42] LOG:  checkpoint complete: wrote 940 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.088 s, sync=0.007 s, total=0.106 s; sync files=321, longest=0.002 s, average=0.001 s; distance=4381 kB, estimate=4381 kB; lsn=0/1937400, redo lsn=0/1937400
+db-1     | 2025-03-22 03:05:18.167 UTC [41] LOG:  database system is shut down
+db-1     |  done
+db-1     | server stopped
+db-1     |
+db-1     | PostgreSQL init process complete; ready for start up.
+db-1     |
+db-1     | 2025-03-22 03:05:18.302 UTC [1] LOG:  starting PostgreSQL 16.8 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+db-1     | 2025-03-22 03:05:18.302 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-1     | 2025-03-22 03:05:18.302 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-1     | 2025-03-22 03:05:18.306 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-1     | 2025-03-22 03:05:18.312 UTC [59] LOG:  database system was shut down at 2025-03-22 03:05:18 UTC
+db-1     | 2025-03-22 03:05:18.320 UTC [1] LOG:  database system is ready to accept connections
+db-1     | 2025-03-22 03:05:27.885 UTC [70] ERROR:  relation "schema_version" does not exist at character 28
+db-1     | 2025-03-22 03:05:27.885 UTC [70] STATEMENT:  SELECT version, minor FROM schema_version;
+db-1     | 2025-03-22 03:05:28.957 UTC [71] ERROR:  relation "schema_version" does not exist at character 28
+db-1     | 2025-03-22 03:05:28.957 UTC [71] STATEMENT:  SELECT version, minor FROM schema_version;
+db-1     | 2025-03-22 03:05:31.014 UTC [72] ERROR:  relation "schema_version" does not exist at character 28
+db-1     | 2025-03-22 03:05:31.014 UTC [72] STATEMENT:  SELECT version, minor FROM schema_version;
+db-1     | 2025-03-22 03:05:34.086 UTC [73] ERROR:  relation "schema_version" does not exist at character 28
+db-1     | 2025-03-22 03:05:34.086 UTC [73] STATEMENT:  SELECT version, minor FROM schema_version;
+redis-1  | 1:C 22 Mar 2025 03:05:15.827 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis-1  | 1:C 22 Mar 2025 03:05:15.830 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1  | 1:C 22 Mar 2025 03:05:15.830 * Redis version=7.4.2, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1  | 1:C 22 Mar 2025 03:05:15.830 * Configuration loaded
+redis-1  | 1:M 22 Mar 2025 03:05:15.831 * monotonic clock: POSIX clock_gettime
+redis-1  | 1:M 22 Mar 2025 03:05:15.832 * Running mode=standalone, port=6379.
+redis-1  | 1:M 22 Mar 2025 03:05:15.832 * Server initialized
+redis-1  | 1:M 22 Mar 2025 03:05:15.832 * Ready to accept connections tcp
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+bind9-1  | exec /usr/local/bin/start.sh: no such file or directory
+web-1    | INFO:     Started server process [1]
+web-1    | INFO:     Waiting for application startup.
+web-1    | INFO:     Application startup complete.
+web-1    | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+web-1    | INFO:     127.0.0.1:49840 - "GET /health HTTP/1.1" 200 OK
+web-1    | INFO:     127.0.0.1:51082 - "GET /health HTTP/1.1" 200 OK
+web-1    | INFO:     127.0.0.1:52278 - "GET /health HTTP/1.1" 200 OK

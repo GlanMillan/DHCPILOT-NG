@@ -1,6 +1,21 @@
 -- 创建扩展
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- 创建schema_version表
+CREATE TABLE IF NOT EXISTS schema_version (
+    version INTEGER NOT NULL,
+    minor INTEGER NOT NULL,
+    patch INTEGER NOT NULL,
+    description TEXT,
+    applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (version, minor, patch)
+);
+
+-- 插入初始版本
+INSERT INTO schema_version (version, minor, patch, description)
+VALUES (1, 0, 0, 'Initial schema version')
+ON CONFLICT DO NOTHING;
+
 -- 授予dhcp用户对所有表的权限
 ALTER DEFAULT PRIVILEGES FOR USER dhcp IN SCHEMA public
     GRANT ALL ON TABLES TO dhcp;

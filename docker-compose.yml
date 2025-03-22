@@ -36,8 +36,8 @@ services:
     expose:
       - "${WEB_PORT}"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
-      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=postgresql://dhcp:dhcp_password@db:5432/dhcp_admin?sslmode=disable
+      - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=${JWT_SECRET}
       - JWT_ALGORITHM=${JWT_ALGORITHM}
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
@@ -69,16 +69,24 @@ services:
       - POSTGRES_USER=dhcp
       - POSTGRES_PASSWORD=dhcp_password
       - POSTGRES_DB=dhcp_admin
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dhcp"]
+      test: ["CMD-SHELL", "pg_isready -U dhcp -d dhcp_admin"]
       interval: 10s
       timeout: 5s
       retries: 5
+    command: 
+      - "postgres"
+      - "-c"
+      - "password_encryption=scram-sha-256"
+      - "-c"
+      - "max_connections=200"
 
   # Kea DHCP服务
   kea:
