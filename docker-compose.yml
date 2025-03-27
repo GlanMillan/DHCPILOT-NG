@@ -9,56 +9,22 @@ x-healthcheck-defaults: &healthcheck-defaults
 services:
   # Nginx反向代理
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: nginx:alpine
     ports:
-      - "0.0.0.0:${NGINX_PORT}:80"
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx/conf:/etc/nginx/conf.d
-      - ./nginx/logs:/var/log/nginx
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
     depends_on:
-      web:
-        condition: service_healthy
-      kea:
-        condition: service_healthy
+      - web
     networks:
       - dhcp-network
     healthcheck:
       test: ["CMD", "nginx", "-t"]
-      <<: *healthcheck-defaults
-
-  # Web应用服务
-  web:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    expose:
-      - "${WEB_PORT}"
-    environment:
-      - DATABASE_URL=postgresql://dhcp:dhcp_password@db:5432/dhcp_admin?sslmode=disable
-      - REDIS_URL=redis://redis:6379/0
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_ALGORITHM=${JWT_ALGORITHM}
-      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
-      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS}
-      - API_KEY_EXPIRE_DAYS=${API_KEY_EXPIRE_DAYS}
-      - KEA_CTRL_AGENT_URL=${KEA_CTRL_AGENT_URL}
-      - BIND9_RNDC_KEY=${BIND9_RNDC_KEY}
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    networks:
-      - dhcp-network
-      - internal
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${WEB_PORT}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-    restart: on-failure
 
   # PostgreSQL数据库
   db:
@@ -66,19 +32,21 @@ services:
     expose:
       - "${POSTGRES_PORT}"
     environment:
-      - POSTGRES_USER=dhcp
-      - POSTGRES_PASSWORD=dhcp_password
-      - POSTGRES_DB=dhcp_admin
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
       - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
     networks:
-      - internal
+      - dhcp-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dhcp -d dhcp_admin"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
       timeout: 5s
       retries: 5
     command: 
@@ -88,55 +56,7 @@ services:
       - "-c"
       - "max_connections=200"
 
-  # Kea DHCP服务
-  kea:
-    build:
-      context: ./kea
-      dockerfile: Dockerfile
-    ports:
-      - "${DHCP_PORT}:67/udp"
-    expose:
-      - "${KEA_CTRL_PORT}"
-    volumes:
-      - ./kea/conf:/etc/kea
-      - ./kea/logs:/var/log/kea
-    environment:
-      - KEA_DB_HOST=db
-      - KEA_DB_PORT=${POSTGRES_PORT}
-      - KEA_DB_NAME=${POSTGRES_DB}
-      - KEA_DB_USER=${POSTGRES_USER}
-      - KEA_DB_PASSWORD=${POSTGRES_PASSWORD}
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - dhcp-network
-      - internal
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${KEA_CTRL_PORT}/status"]
-      <<: *healthcheck-defaults
-    restart: on-failure
-
-  # BIND9服务
-  bind9:
-    build:
-      context: ./bind9
-      dockerfile: Dockerfile
-    ports:
-      - "53:53/udp"
-      - "53:53/tcp"
-    volumes:
-      - ./bind9/conf:/etc/bind
-      - ./bind9/zones:/var/cache/bind
-      - ./bind9/logs:/var/log/bind
-      - bind9_keys:/etc/bind/keys
-    networks:
-      - dhcp-network
-    healthcheck:
-      test: ["CMD", "dig", "@localhost", "localhost"]
-      <<: *healthcheck-defaults
-    restart: on-failure
-
+  # Redis缓存服务
   redis:
     image: redis:7-alpine
     expose:
@@ -144,27 +64,53 @@ services:
     volumes:
       - redis_data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
     networks:
-      - internal
+      - dhcp-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      <<: *healthcheck-defaults
+      interval: 5s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
           memory: 256M
 
+  # Web应用服务
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://redis:6379/0
+      - KEA_CTRL_AGENT_URL=${KEA_CTRL_AGENT_URL}
+      - BIND9_RNDC_KEY=${BIND9_RNDC_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dhcp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${WEB_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+
 networks:
   dhcp-network:
-    name: ${DOCKER_NETWORK_EXTERNAL}
     driver: bridge
-  internal:
-    name: ${DOCKER_NETWORK_INTERNAL}
-    driver: bridge
-    internal: true
 
 volumes:
   postgres_data:
-  redis_data:
-  bind9_keys: 
+  redis_data: 
