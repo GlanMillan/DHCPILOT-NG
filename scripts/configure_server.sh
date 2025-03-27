@@ -190,38 +190,20 @@ configure_bind9() {
     mkdir -p /etc/bind
     mkdir -p /var/cache/bind
     
-    # 创建默认配置文件（如果不存在）
-    if [ ! -f /etc/bind/named.conf ]; then
-        log "创建默认named.conf..."
-        cat > /etc/bind/named.conf << 'EOF'
-include "/etc/bind/named.conf.options";
-include "/etc/bind/named.conf.local";
-include "/etc/bind/named.conf.default-zones";
-EOF
-    fi
-    
-    # 创建默认区域文件（如果不存在）
-    if [ ! -f /etc/bind/db.example.com ]; then
-        log "创建默认区域文件..."
-        cat > /etc/bind/db.example.com << 'EOF'
-$TTL    604800
-@       IN      SOA     ns1.example.com. admin.example.com. (
-                     2024032701         ; Serial
-                         604800         ; Refresh
-                          86400         ; Retry
-                        2419200         ; Expire
-                         604800 )       ; Negative Cache TTL
-;
-@       IN      NS      ns1.example.com.
-ns1     IN      A       127.0.0.1
-EOF
-    fi
+    # 复制配置文件
+    log "复制BIND9配置文件..."
+    cp config/bind9/named.conf /etc/bind/
+    cp config/bind9/named.conf.options /etc/bind/
+    cp config/bind9/named.conf.local /etc/bind/
+    cp config/bind9/zones/* /etc/bind/
     
     # 设置权限
     chown -R bind:bind /etc/bind
     chown -R bind:bind /var/cache/bind
     chmod 644 /etc/bind/named.conf
-    chmod 644 /etc/bind/db.example.com
+    chmod 644 /etc/bind/named.conf.options
+    chmod 644 /etc/bind/named.conf.local
+    chmod 644 /etc/bind/zones/*
     
     # 启动BIND9服务
     systemctl enable named
@@ -242,7 +224,8 @@ configure_kea() {
     mkdir -p /var/log/kea
     
     # 复制配置文件
-    cp kea-dhcp4/conf/kea-dhcp4.conf /etc/kea/
+    log "复制KEA DHCP配置文件..."
+    cp config/kea/kea-dhcp4.conf /etc/kea/
     
     # 设置权限
     chown -R kea:kea /etc/kea

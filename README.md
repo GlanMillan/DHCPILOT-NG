@@ -20,7 +20,7 @@ DHCPLIOT-NG是一个基于FastAPI的DHCP和DNS管理系统，提供Web界面来�
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/DHCPLIOT-NG.git
+git clone https://github.com/GlanMillan/DHCPLIOT-NG.git
 cd DHCPLIOT-NG
 
 # 运行服务器部署脚本
@@ -83,15 +83,29 @@ POSTGRES_DB=dhcp_admin
 ├── frontend/         # 前端应用
 ├── nginx/            # Nginx配置
 ├── redis/            # Redis配置
-├── scripts/          # 部署脚本
-├── bind9/            # BIND9服务器配置文件（用于服务器部署）
-│   ├── conf/        # BIND9配置文件
-│   ├── zones/       # DNS区域文件
-│   └── generate_key.sh  # RNDC密钥生成脚本
-├── kea/              # KEA DHCP服务器配置文件（用于服务器部署）
-│   └── conf/        # KEA DHCP配置文件
-├── docker-compose.yml
-└── README.md
+├── scripts/          # 部署和维护脚本
+│   ├── configure_server.sh  # 服务器配置脚本
+│   ├── reset_server.sh     # 服务器重置脚本
+│   ├── maintain_web.sh     # Web服务维护脚本
+│   ├── fix_kea_dhcp.sh     # KEA DHCP修复脚本
+│   ├── generate_key.sh     # RNDC密钥生成脚本
+│   ├── deploy.sh          # 部署脚本（将合并到maintain_web.sh）
+│   └── configure_docker.sh # Docker配置脚本（将合并到maintain_web.sh）
+├── config/           # 服务器配置文件
+│   ├── bind9/       # BIND9配置
+│   │   ├── named.conf              # 主配置文件
+│   │   ├── named.conf.options      # 全局选项配置
+│   │   ├── named.conf.local        # 本地区域配置
+│   │   ├── named.conf.default-zones # 默认区域配置
+│   │   └── zones/                  # DNS区域文件目录
+│   │       └── db.example.com      # 示例区域文件
+│   └── kea/         # KEA DHCP配置
+│       └── kea-dhcp4.conf          # DHCPv4服务器配置
+├── docker-compose.yml              # Docker Compose配置
+├── .env                           # 环境变量配置
+├── .env.example                   # 环境变量示例
+├── alembic.ini                    # 数据库迁移配置
+└── README.md                      # 项目说明文档
 ```
 
 ## 部署注意事项
@@ -155,5 +169,5 @@ npm run dev
 
 ## 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+啥是许可证？？？？？
 
