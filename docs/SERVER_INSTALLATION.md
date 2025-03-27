@@ -1,4 +1,4 @@
- # BIND9和KEA DHCP服务器安装指南
+# BIND9和KEA DHCP服务器安装指南
 
 本文档提供了在Ubuntu 22.04 LTS服务器上安装和配置BIND9和KEA DHCP的详细步骤。
 
@@ -9,11 +9,18 @@
 - 至少20GB可用磁盘空间
 - root或具有sudo权限的用户
 
+> 注意：如果您是以root用户登录，请直接使用命令而不需要sudo前缀。如果您是以普通用户登录，请保留sudo前缀。
+
 ## 1. 系统更新
 
 首先更新系统包：
 
 ```bash
+# 如果以root用户登录：
+apt update
+apt upgrade -y
+
+# 如果以普通用户登录：
 sudo apt update
 sudo apt upgrade -y
 ```
@@ -50,7 +57,7 @@ sudo chmod 640 /etc/bind/rndc.key
 3. 配置BIND9主配置文件：
 
 ```bash
-sudo nano /etc/bind/named.conf
+sudo vim /etc/bind/named.conf
 ```
 
 添加以下内容：
@@ -76,7 +83,7 @@ options {
 4. 配置本地区域文件：
 
 ```bash
-sudo nano /etc/bind/named.conf.local
+sudo vim /etc/bind/named.conf.local
 ```
 
 添加以下内容：
@@ -94,7 +101,7 @@ zone "example.com" {
 
 ```bash
 sudo mkdir -p /etc/bind/zones
-sudo nano /etc/bind/zones/db.example.com
+sudo vim /etc/bind/zones/db.example.com
 ```
 
 添加以下内容：
@@ -141,7 +148,19 @@ sudo systemctl status bind9
 sudo apt install -y kea-dhcp4-server kea-common
 ```
 
-### 3.2 配置KEA DHCP
+### 3.2 创建KEA用户和用户组
+
+```bash
+# 如果以root用户登录：
+groupadd kea
+useradd -r -s /bin/false -g kea kea
+
+# 如果以普通用户登录：
+sudo groupadd kea
+sudo useradd -r -s /bin/false -g kea kea
+```
+
+### 3.3 配置KEA DHCP
 
 1. 创建日志目录：
 
@@ -154,7 +173,7 @@ sudo chmod 775 /var/log/kea
 2. 配置KEA DHCP：
 
 ```bash
-sudo nano /etc/kea/kea-dhcp4.conf
+sudo vim /etc/kea/kea-dhcp4.conf
 ```
 
 添加以下内容：

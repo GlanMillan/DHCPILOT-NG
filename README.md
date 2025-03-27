@@ -10,12 +10,13 @@ DHCPLIOT-NG是一个基于FastAPI的DHCP和DNS管理系统，提供Web界面来�
 - Nginx
 - BIND9 (在物理服务器上)
 - Kea DHCP (在物理服务器上)
+- Docker & Docker Compose
 
 ## 快速开始
 
 ### 1. 服务器端部署
 
-首先需要在物理服务器上部署BIND9和Kea DHCP服务：
+首先需要在物理服务器上部署BIND9和KEA DHCP服务：
 
 ```bash
 # 克隆仓库
@@ -25,6 +26,14 @@ cd DHCPLIOT-NG
 # 运行服务器部署脚本
 sudo ./scripts/deploy_server.sh
 ```
+
+部署脚本会自动完成以下步骤：
+1. 安装必要的软件包（BIND9、KEA DHCP、PostgreSQL等）
+2. 创建必要的用户和用户组
+3. 配置BIND9和KEA DHCP的基本设置
+4. 启动Docker服务（数据库、Redis等）
+5. 配置数据库
+6. 启动所有服务
 
 ### 2. 应用服务部署
 
@@ -75,11 +84,37 @@ POSTGRES_DB=dhcp_admin
 ├── nginx/            # Nginx配置
 ├── redis/            # Redis配置
 ├── scripts/          # 部署脚本
-├── bind9/            # BIND9配置（用于服务器部署）
-├── kea/              # Kea DHCP配置（用于服务器部署）
+├── bind9/            # BIND9服务器配置文件（用于服务器部署）
+│   ├── conf/        # BIND9配置文件
+│   ├── zones/       # DNS区域文件
+│   └── generate_key.sh  # RNDC密钥生成脚本
+├── kea/              # KEA DHCP服务器配置文件（用于服务器部署）
+│   └── conf/        # KEA DHCP配置文件
 ├── docker-compose.yml
 └── README.md
 ```
+
+## 部署注意事项
+
+1. 部署顺序
+   - 先运行 `deploy_server.sh` 脚本部署服务器端服务
+   - 等待所有服务启动完成
+   - 再使用 Docker Compose 部署应用服务
+
+2. 数据库配置
+   - 确保数据库服务已完全启动
+   - 检查数据库连接是否正常
+   - 确保数据库用户权限正确
+
+3. 服务检查
+   - 使用 `systemctl status` 检查服务状态
+   - 检查日志文件排查问题
+   - 确保防火墙允许必要端口
+
+4. 常见问题
+   - 如果KEA DHCP启动失败，检查数据库连接
+   - 如果BIND9启动失败，检查配置文件权限
+   - 如果应用服务无法连接，检查网络配置
 
 ## 开发
 

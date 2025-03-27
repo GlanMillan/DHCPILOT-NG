@@ -12,7 +12,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制应用代码
-COPY app/ .
+COPY app/main.py .
+COPY app/models/ ./models/
 
 EXPOSE 8000
 

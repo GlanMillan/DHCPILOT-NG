@@ -26,59 +26,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # PostgreSQL数据库
-  db:
-    image: postgres:16-alpine
-    expose:
-      - "${POSTGRES_PORT}"
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
-      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-    networks:
-      - dhcp-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    command: 
-      - "postgres"
-      - "-c"
-      - "password_encryption=scram-sha-256"
-      - "-c"
-      - "max_connections=200"
-
-  # Redis缓存服务
-  redis:
-    image: redis:7-alpine
-    expose:
-      - "${REDIS_PORT}"
-    volumes:
-      - redis_data:/data
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: redis-server --appendonly yes
-    ports:
-      - "6379:6379"
-    networks:
-      - dhcp-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 256M
-
   # Web应用服务
   web:
     build:
@@ -89,15 +36,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@host.docker.internal:5432/${POSTGRES_DB}
+      - REDIS_URL=redis://host.docker.internal:6379/0
       - KEA_CTRL_AGENT_URL=${KEA_CTRL_AGENT_URL}
       - BIND9_RNDC_KEY=${BIND9_RNDC_KEY}
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     networks:
       - dhcp-network
     healthcheck:
@@ -109,8 +51,4 @@ services:
 
 networks:
   dhcp-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
-  redis_data: 
+    driver: bridge 
