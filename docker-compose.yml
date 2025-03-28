@@ -36,7 +36,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@host.docker.internal:5432/${POSTGRES_DB}
+      - DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@host.docker.internal:${MYSQL_PORT}/${MYSQL_DATABASE}
       - REDIS_URL=redis://host.docker.internal:6379/0
       - KEA_CTRL_AGENT_URL=${KEA_CTRL_AGENT_URL}
       - BIND9_RNDC_KEY=${BIND9_RNDC_KEY}
